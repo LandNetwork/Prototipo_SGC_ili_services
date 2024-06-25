@@ -1,0 +1,487 @@
+INTERLIS 2.3;
+
+/** Notas de version:
+ * 2024_04_11 FM - Se elimina atributo Transaccion_Tipo de la clase GP_Transaccion.
+ */
+!!@ technicalContact="mailto:contacto@ceicol.com"
+MODEL Gestion_Procesos_V0_1 (es)
+AT "https://ceicol.com"
+VERSION "0.1"  // Modelo de datos para la gestión de procesos versión 0.1 // =
+  IMPORTS Gestion_Catastral_V0_1;
+
+  UNIT
+
+    PesoColombiano [COP] EXTENDS INTERLIS.MONEY;
+
+  TOPIC Gestion_Procesos =
+    BASKET OID AS INTERLIS.UUIDOID;
+    OID AS INTERLIS.UUIDOID;
+    DEPENDS ON Gestion_Catastral_V0_1.Gestion_Catastral;
+
+    DOMAIN
+
+      GP_EstadoTipo = (
+        !!@ ili2db.dispName = "Inicio"
+        !!@ ili2db.dispName="Inicio"
+        Inicio,
+        !!@ ili2db.dispName = "Proceso"
+        !!@ ili2db.dispName="Proceso"
+        Proceso,
+        !!@ ili2db.dispName = "Cancelado"
+        !!@ ili2db.dispName="Cancelado"
+        Cancelado,
+        !!@ ili2db.dispName = "Finalizado"
+        !!@ ili2db.dispName="Finalizado"
+        Finalizado
+      );
+
+      GP_InteresadoDocumentoTipo = (
+        /** Es un documento emitido por la Registraduría Nacional del Estado Civil para permitir la identificación personal de los ciudadanos.
+         */
+        !!@ ili2db.dispName = "Cédula de ciudadanía"
+        !!@ ili2db.dispName="Cédula de ciudadanía"
+        Cedula_Ciudadania,
+        /** Es el documento que cumple los fines de identificación de los extranjeros en el territorio nacional y su utilización deberá estar acorde con la visa otorgada al extranjero.
+         */
+        !!@ ili2db.dispName = "Cédula de extranjería"
+        !!@ ili2db.dispName="Cédula de extranjería"
+        Cedula_Extranjeria,
+        /** El Número de Identificación Tributaria (NIT) es un código privado, secreto e intransferible que solamente debe conocer el contribuyente.
+         */
+        !!@ ili2db.dispName = "NIT"
+        !!@ ili2db.dispName="NIT"
+        NIT,
+        /** Es el documento oficial que hace las veces de identificación para los menores de edad entre los 7 y los 18 años.
+         */
+        !!@ ili2db.dispName = "Tarjeta de identidad"
+        !!@ ili2db.dispName="Tarjeta de identidad"
+        Tarjeta_Identidad,
+        /** Registro donde se hacen constar por autoridades competentes los nacimientos, matrimonios, defunciones y demás hechos relativos al estado civil de las personas. En el modelo se tendrá en cuenta el número de registro como identificación personal de las personas de 0 a 7 años.
+         */
+        !!@ ili2db.dispName = "Registro civil"
+        !!@ ili2db.dispName="Registro civil"
+        Registro_Civil,
+        /** Es un consecutivo asignado automáticamente en registro en lugar del número de la identificación de la persona que hace el trámite, se usa especialmente en trámites de construcción cuando el proyecto está a nombre de una Fiducia el cual tiene el mismo número del banco.
+         */
+        !!@ ili2db.dispName = "Secuencial"
+        !!@ ili2db.dispName="Secuencial"
+        Secuencial,
+        /** Documento que acredita la identidad y la nacionalidad de una persona y que es necesario para viajar a determinados países.
+         */
+        !!@ ili2db.dispName = "Pasaporte"
+        !!@ ili2db.dispName="Pasaporte"
+        Pasaporte
+      );
+
+      GP_MedioSolicitudTipo = (
+        !!@ ili2db.dispName = "Presencial"
+        !!@ ili2db.dispName="Presencial"
+        Presencial,
+        !!@ ili2db.dispName = "Web"
+        !!@ ili2db.dispName="Web"
+        Web
+      );
+
+      GP_ProductoTipo = (
+        !!@ ili2db.dispName = "Informe técnico"
+        !!@ ili2db.dispName="Informe técnico"
+        Informe_Tecnico,
+        !!@ ili2db.dispName = "Resolución"
+        !!@ ili2db.dispName="Resolución"
+        Resolucion,
+        !!@ ili2db.dispName = "Plano"
+        !!@ ili2db.dispName="Plano"
+        Plano
+      );
+
+      GP_ResultadoTipo = (
+        !!@ ili2db.dispName = "Exitoso"
+        !!@ ili2db.dispName="Exitoso"
+        Exitoso,
+        !!@ ili2db.dispName = "Suspendido"
+        !!@ ili2db.dispName="Suspendido"
+        Suspendido,
+        !!@ ili2db.dispName = "Cancelado"
+        !!@ ili2db.dispName="Cancelado"
+        Cancelado
+      );
+
+      GP_SoporteTipo = (
+        !!@ ili2db.dispName = "Cédula de ciudadanía"
+        !!@ ili2db.dispName="Cédula de ciudadanía"
+        Cedula_Ciudadania,
+        !!@ ili2db.dispName = "Acta de compraventa"
+        !!@ ili2db.dispName="Acta de compraventa"
+        Acta_Compraventa,
+        !!@ ili2db.dispName = "Escritura pública"
+        !!@ ili2db.dispName="Escritura pública"
+        Escritura_Publica,
+        !!@ ili2db.dispName = "Certificado de tradición y libertad"
+        !!@ ili2db.dispName="Certificado de tradición y libertad"
+        Certificado_Tradicion_Libertad
+      );
+
+      GP_TipoSolicitante = (
+        !!@ ili2db.dispName = "Propietario"
+        !!@ ili2db.dispName="Propietario"
+        Propietario,
+        !!@ ili2db.dispName = "Apoderado"
+        !!@ ili2db.dispName="Apoderado"
+        Apoderado,
+        !!@ ili2db.dispName = "Ocupante"
+        !!@ ili2db.dispName="Ocupante"
+        Ocupante
+      );
+
+      GP_TransaccionTipo = (
+        !!@ ili2db.dispName = "Aspecto jurídico del predio con matrícula inmobiliaria"
+        !!@ ili2db.dispName="Aspecto jurídico del predio con matrícula inmobiliaria"
+        Aspecto_Juridico_Matricula_Inmobiliaria(
+          !!@ ili2db.dispName = "Cambio de nombre"
+          !!@ ili2db.dispName="Cambio de nombre"
+          Cambio_Nombre
+        ),
+        !!@ ili2db.dispName = "Aspecto físico de predios en no propiedad horizontal"
+        !!@ ili2db.dispName="Aspecto físico de predios en no propiedad horizontal"
+        Aspecto_Fisico_Predios_NPH(
+          !!@ ili2db.dispName = "Desenglobe"
+          !!@ ili2db.dispName="Desenglobe"
+          Desenglobe,
+          !!@ ili2db.dispName = "Desenglobe de desarrollos urbanísticos y zonas de gestión"
+          !!@ ili2db.dispName="Desenglobe de desarrollos urbanísticos y zonas de gestión"
+          Desenglobe_Desarrollos_Urbanisticos_Zonas_Gestion,
+          !!@ ili2db.dispName = "Englobe"
+          !!@ ili2db.dispName="Englobe"
+          Englobe,
+          !!@ ili2db.dispName = "Rectificación de área de terreno en predio NPH"
+          !!@ ili2db.dispName="Rectificación de área de terreno en predio NPH"
+          Rectificacion_Area_Terreno_NPH,
+          !!@ ili2db.dispName = "Rectificación de área construida en predio NPH"
+          !!@ ili2db.dispName="Rectificación de área construida en predio NPH"
+          Rectificacion_Area_Construida_NPH,
+          !!@ ili2db.dispName = "Corrección del identificador predial"
+          !!@ ili2db.dispName="Corrección del identificador predial"
+          Correccion_Identificador_Predial,
+          !!@ ili2db.dispName = "Corrección de dirección"
+          !!@ ili2db.dispName="Corrección de dirección"
+          Correccion_Direccion,
+          !!@ ili2db.dispName = "Verificación de estrato, uso o destino"
+          !!@ ili2db.dispName="Verificación de estrato, uso o destino"
+          Verificacion_Estrato_Uso_Destino,
+          !!@ ili2db.dispName = "Recursos de reposición de tramites de aspecto fisico"
+          !!@ ili2db.dispName="Recursos de reposición de tramites de aspecto fisico"
+          Recurso_Reposicion_Tramites_Aspecto_Fisico
+        ),
+        !!@ ili2db.dispName = "Aspectos físicos en predios en propiedad horizontal"
+        !!@ ili2db.dispName="Aspectos físicos en predios en propiedad horizontal"
+        Aspecto_Fisico_Predios_PH(
+          !!@ ili2db.dispName = "Desenglobe en propiedad horizontal"
+          !!@ ili2db.dispName="Desenglobe en propiedad horizontal"
+          Desenglobe_PH,
+          !!@ ili2db.dispName = "Incorporacion y/o rectificación de construcción en propiedad horizontal"
+          !!@ ili2db.dispName="Incorporacion y/o rectificación de construcción en propiedad horizontal"
+          Incorporacion_Rectificacion_Construccion_PH,
+          !!@ ili2db.dispName = "Reforma de propiedad horizontal/condominio"
+          !!@ ili2db.dispName="Reforma de propiedad horizontal/condominio"
+          Reforma_PH_Condominio,
+          !!@ ili2db.dispName = "Englobe en propiedad horizontal"
+          !!@ ili2db.dispName="Englobe en propiedad horizontal"
+          Englobe_PH,
+          !!@ ili2db.dispName = "Rectificación de estrato, uso o destino"
+          !!@ ili2db.dispName="Rectificación de estrato, uso o destino"
+          Rectificacion_Estrato_Uso_Destino,
+          !!@ ili2db.dispName = "Corrección de nomenclatura de la unidad predial"
+          !!@ ili2db.dispName="Corrección de nomenclatura de la unidad predial"
+          Correccion_Nomenclatura_Unidad_Predial,
+          !!@ ili2db.dispName = "Corrección del identificador predial en propiedad horizontal"
+          !!@ ili2db.dispName="Corrección del identificador predial en propiedad horizontal"
+          Correccion_Identificador_Predial_PH,
+          !!@ ili2db.dispName = "Corrección de dirección principal en propiedad horizontal"
+          !!@ ili2db.dispName="Corrección de dirección principal en propiedad horizontal"
+          Correccion_Direccion_Principal_PH,
+          !!@ ili2db.dispName = "Rectificación de área de terreno en propiedad horizontal"
+          !!@ ili2db.dispName="Rectificación de área de terreno en propiedad horizontal"
+          Rectificacion_Area_Terreno_PH,
+          !!@ ili2db.dispName = "Recursos de reposición de tramites de aspecto fisico"
+          !!@ ili2db.dispName="Recursos de reposición de tramites de aspecto fisico"
+          Recurso_Reposicion_Tramites_Aspecto_Fisico
+        ),
+        !!@ ili2db.dispName = "Aspecto_Economico"
+        !!@ ili2db.dispName="Aspecto_Economico"
+        Aspecto_Economico(
+          !!@ ili2db.dispName = "Revisión de avalúo"
+          !!@ ili2db.dispName="Revisión de avalúo"
+          Revision_Avaluo,
+          !!@ ili2db.dispName = "Autoavalúo catastral"
+          !!@ ili2db.dispName="Autoavalúo catastral"
+          Autoavaluo_Catastral,
+          !!@ ili2db.dispName = "Recurso de reposición de trámite de revisión de avalúo"
+          !!@ ili2db.dispName="Recurso de reposición de trámite de revisión de avalúo"
+          Recurso_Reposicion_Tramite_Revision_Avaluo
+        ),
+        !!@ ili2db.dispName = "Otros_tramites"
+        !!@ ili2db.dispName="Otros_tramites"
+        Otros_tramites(
+          !!@ ili2db.dispName = "Incorporación de levantamientos topográficos"
+          !!@ ili2db.dispName="Incorporación de levantamientos topográficos"
+          Incorporacion_Levantamientos_Topograficos,
+          !!@ ili2db.dispName = "Actualización, corrección y modificación de los levantamientos topográficos"
+          !!@ ili2db.dispName="Actualización, corrección y modificación de los levantamientos topográficos"
+          Actualizacion_Correccion_Modificacion_Levantamientos_Topograficos,
+          !!@ ili2db.dispName = "Asignación provisional de nomenclatura"
+          !!@ ili2db.dispName="Asignación provisional de nomenclatura"
+          Asignacion_Provisional_Nomenclatura,
+          !!@ ili2db.dispName = "Certificación de cabida y linderos"
+          !!@ ili2db.dispName="Certificación de cabida y linderos"
+          Certificacion_Cabida_Linderos,
+          !!@ ili2db.dispName = "Recibo de pago por participación en plusvalía"
+          !!@ ili2db.dispName="Recibo de pago por participación en plusvalía"
+          Recibo_Pago_Participacion_Plusvalia
+        )
+      );
+
+    !!@ ili2db.dispName = "(GP) Tipo de actividad"
+    !!@ ili2db.dispName="(GP) Tipo de actividad"
+    CLASS GP_TipoActividad =
+      !!@ ili2db.dispName = "Nombre"
+      !!@ ili2db.dispName="Nombre"
+      Nombre : TEXT*100;
+      !!@ ili2db.dispName = "Descripción"
+      !!@ ili2db.dispName="Descripción"
+      Descripcion : MTEXT*500;
+      !!@ ili2db.dispName = "Tiempo estimado"
+      !!@ ili2db.dispName="Tiempo estimado"
+      Tiempo_Estimado : 1 .. 500;
+    END GP_TipoActividad;
+
+    !!@ ili2db.dispName = "(GP) Tipo  rol"
+    !!@ ili2db.dispName="(GP) Tipo  rol"
+    CLASS GP_TipoRol =
+      !!@ ili2db.dispName = "Nombre"
+      !!@ ili2db.dispName="Nombre"
+      Nombre : TEXT*150;
+      Descripcion : MTEXT*200;
+      !!@ ili2db.dispName = "Operativo"
+      !!@ ili2db.dispName="Operativo"
+      Opertivo : BOOLEAN;
+    END GP_TipoRol;
+
+    !!@ ili2db.dispName = "(GP) Actividad"
+    !!@ ili2db.dispName="(GP) Actividad"
+    CLASS GP_Actividad =
+      Estado : GP_EstadoTipo;
+      !!@ ili2db.dispName = "Fecha de inicio"
+      !!@ ili2db.dispName="Fecha de inicio"
+      Fecha_Inicio : MANDATORY INTERLIS.XMLDateTime;
+      !!@ ili2db.dispName = "Fecha de finalización"
+      !!@ ili2db.dispName="Fecha de finalización"
+      Fecha_Finalizacion : INTERLIS.XMLDateTime;
+      !!@ ili2db.dispName = "Fecha de finalización estimada"
+      !!@ ili2db.dispName="Fecha de finalización estimada"
+      Fecha_Finalizacion_Estimada : INTERLIS.XMLDateTime;
+    END GP_Actividad;
+
+    !!@ ili2db.dispName = "(GP) Documento transacción valor"
+    !!@ ili2db.dispName="(GP) Documento transacción valor"
+    STRUCTURE GP_DocumentoTransaccionValor =
+      !!@ ili2db.dispName = "Documentos"
+      !!@ ili2db.dispName="Documentos"
+      Documentos : MANDATORY GP_SoporteTipo;
+    END GP_DocumentoTransaccionValor;
+
+    !!@ ili2db.dispName = "(GP) Productos valor"
+    !!@ ili2db.dispName="(GP) Productos valor"
+    STRUCTURE GP_ProductosValor =
+      !!@ ili2db.dispName = "Tipo de producto"
+      !!@ ili2db.dispName="Tipo de producto"
+      Tipo_Producto : MANDATORY GP_ProductoTipo;
+      Identificador : TEXT*100;
+      !!@ ili2db.dispName = "Ruta"
+      !!@ ili2db.dispName="Ruta"
+      Ruta : TEXT;
+      !!@ ili2db.dispName = "Fecha"
+      !!@ ili2db.dispName="Fecha"
+      Fecha : INTERLIS.XMLDate;
+      !!@ ili2db.dispName = "Observaciones"
+      !!@ ili2db.dispName="Observaciones"
+      Observaciones : MTEXT*500;
+    END GP_ProductosValor;
+
+    !!@ ili2db.dispName = "(GP) Soporte documental valor"
+    !!@ ili2db.dispName="(GP) Soporte documental valor"
+    STRUCTURE GP_SoporteDocumentalValor =
+      !!@ ili2db.dispName = "Tipo de soporte"
+      !!@ ili2db.dispName="Tipo de soporte"
+      Tipo_Soporte : MANDATORY GP_SoporteTipo;
+      !!@ ili2db.dispName = "Ruta"
+      !!@ ili2db.dispName="Ruta"
+      Ruta : TEXT;
+      !!@ ili2db.dispName = "Fecha"
+      !!@ ili2db.dispName="Fecha"
+      Fecha : INTERLIS.XMLDateTime;
+      Observaciones : TEXT*200;
+    END GP_SoporteDocumentalValor;
+
+    !!@ ili2db.dispName = "(GP) Usuario"
+    !!@ ili2db.dispName="(GP) Usuario"
+    CLASS GP_Usuario =
+      Tipo_Documento : MANDATORY GP_InteresadoDocumentoTipo;
+      !!@ ili2db.dispName = "Numero de documento"
+      !!@ ili2db.dispName="Numero de documento"
+      Numero_Documento : MANDATORY TEXT*30;
+      !!@ ili2db.dispName = "Correo electrónico"
+      !!@ ili2db.dispName="Correo electrónico"
+      Correo_Electronico : TEXT*100;
+      !!@ ili2db.dispName = "Primer nombre"
+      !!@ ili2db.dispName="Primer nombre"
+      Primer_Nombre : TEXT*50;
+      !!@ ili2db.dispName = "Segundo nombre"
+      !!@ ili2db.dispName="Segundo nombre"
+      Segundo_Nombre : TEXT*50;
+      !!@ ili2db.dispName = "Primer apellido"
+      !!@ ili2db.dispName="Primer apellido"
+      Primer_Apellido : TEXT*50;
+      !!@ ili2db.dispName = "Segundo apellido"
+      !!@ ili2db.dispName="Segundo apellido"
+      Segundo_Apellido : TEXT*50;
+      !!@ ili2db.dispName = "Número celular"
+      !!@ ili2db.dispName="Número celular"
+      Numero_Celular : TEXT*50;
+      !!@ ili2db.dispName = "Asociación interesado"
+      !!@ ili2db.dispName="Asociación interesado"
+      Asociacion_Interesado : BOOLEAN;
+      !!@ ili2db.dispName = "Llave"
+      !!@ ili2db.dispName="Llave"
+      Llave : TEXT*256;
+      !!@ ili2db.dispName = "Llave caduca"
+      !!@ ili2db.dispName="Llave caduca"
+      Llave_Caduca : INTERLIS.XMLDateTime;
+    END GP_Usuario;
+
+    ASSOCIATION gp_flujo_tipoactividad =
+      siguiente -- {0..*} GP_TipoActividad;
+      predecesora -- {0..*} GP_TipoActividad;
+      !!@ ili2db.dispName = "Condición transición"
+      !!@ ili2db.dispName="Condición transición"
+      condicion_transicion : MANDATORY TEXT*255;
+    END gp_flujo_tipoactividad;
+
+    ASSOCIATION gp_tipoactividad_rol =
+      tipo_actividad -- {0..*} GP_TipoActividad;
+      rol -- {1..*} GP_TipoRol;
+    END gp_tipoactividad_rol;
+
+    !!@ ili2db.dispName = "(GP) Solicitud"
+    !!@ ili2db.dispName="(GP) Solicitud"
+    CLASS GP_Solicitud =
+      !!@ ili2db.dispName = "Tipo de solicitante"
+      !!@ ili2db.dispName="Tipo de solicitante"
+      Tipo_Solicitante : MANDATORY GP_TipoSolicitante;
+      !!@ ili2db.dispName = "Fecha de radicación"
+      !!@ ili2db.dispName="Fecha de radicación"
+      Fecha_Radicacion : MANDATORY INTERLIS.XMLDateTime;
+      !!@ ili2db.dispName = "Número de radicado"
+      !!@ ili2db.dispName="Número de radicado"
+      Numero_Radicado : TEXT*30;
+      !!@ ili2db.dispName = "Descripción de solicitud"
+      !!@ ili2db.dispName="Descripción de solicitud"
+      Descripcion_Solicitud : MTEXT*500;
+      !!@ ili2db.dispName = "Tipo de medio"
+      !!@ ili2db.dispName="Tipo de medio"
+      Medio_Tipo : GP_MedioSolicitudTipo;
+      !!@ ili2db.dispName = "Soportes documentales de la solicitud"
+      !!@ ili2db.dispName="Soportes documentales de la solicitud"
+      Soportes_Documentales : BAG {0..*} OF Gestion_Procesos_V0_1.Gestion_Procesos.GP_SoporteDocumentalValor;
+    END GP_Solicitud;
+
+    !!@ ili2db.dispName = "(GP) Tipo transacción"
+    !!@ ili2db.dispName="(GP) Tipo transacción"
+    CLASS GP_TipoTransaccion =
+      Nombre : MANDATORY TEXT*100;
+      !!@ ili2db.dispName = "Descripción"
+      !!@ ili2db.dispName="Descripción"
+      Descripcion : MTEXT*500;
+      !!@ ili2db.dispName = "Documento"
+      !!@ ili2db.dispName="Documento"
+      Documento : BAG {0..*} OF Gestion_Procesos_V0_1.Gestion_Procesos.GP_DocumentoTransaccionValor;
+    END GP_TipoTransaccion;
+
+    ASSOCIATION gp_gc_interesado_gp_solicitud =
+      gc_interesado (EXTERNAL) -- {1} Gestion_Catastral_V0_1.Gestion_Catastral.GC_Interesado;
+      gp_solicitud -- {0..*} GP_Solicitud;
+    END gp_gc_interesado_gp_solicitud;
+
+    !!@ ili2db.dispName = "(GP) Transaccion"
+    !!@ ili2db.dispName="(GP) Transaccion"
+    CLASS GP_Transaccion =
+      !!@ ili2db.dispName = "Productos"
+      !!@ ili2db.dispName="Productos"
+      Producto : BAG {0..*} OF Gestion_Procesos_V0_1.Gestion_Procesos.GP_ProductosValor;
+      Resultado : GP_ResultadoTipo;
+      !!@ ili2db.dispName = "Fecha de inicio"
+      !!@ ili2db.dispName="Fecha de inicio"
+      Fecha_Inicio : INTERLIS.XMLDateTime;
+      !!@ ili2db.dispName = "Fecha de finalización"
+      !!@ ili2db.dispName="Fecha de finalización"
+      Fecha_Finalizacion : INTERLIS.XMLDateTime;
+      !!@ ili2db.dispName = "Fecha de finalización estimada"
+      !!@ ili2db.dispName="Fecha de finalización estimada"
+      Fecha_Finalizacion_Estimada : INTERLIS.XMLDateTime;
+    END GP_Transaccion;
+
+    ASSOCIATION gp_actividad_tipoactvidad =
+      actividad -- {0..*} GP_Actividad;
+      tipo_actividad -- {1} GP_TipoActividad;
+    END gp_actividad_tipoactvidad;
+
+    ASSOCIATION gp_gc_predio_gp_transaccion =
+      gc_predio (EXTERNAL) -- {1..*} Gestion_Catastral_V0_1.Gestion_Catastral.GC_Predio;
+      gp_transaccion -- {0..*} GP_Transaccion;
+    END gp_gc_predio_gp_transaccion;
+
+    ASSOCIATION gp_actividad_usuario =
+      actividad -- {0..*} GP_Actividad;
+      usuario -- {1} GP_Usuario;
+    END gp_actividad_usuario;
+
+    ASSOCIATION gp_usuario_rol =
+      usuario -- {1..*} GP_Usuario;
+      rol -- {1..*} GP_TipoRol;
+    END gp_usuario_rol;
+
+    ASSOCIATION gp_flujo_transaccion =
+      siguiente -- {0..*} GP_Transaccion;
+      predecesora -- {0..*} GP_Transaccion;
+    END gp_flujo_transaccion;
+
+    ASSOCIATION gp_solicitud_transaccion =
+      solicitud -- {1} GP_Solicitud;
+      transaccion -- {1..*} GP_Transaccion;
+    END gp_solicitud_transaccion;
+
+    ASSOCIATION gp_tipotransaccion_tipoactividad =
+      tipo_transaccion -- {1} GP_TipoTransaccion;
+      tipo_actividad -- {1..*} GP_TipoActividad;
+    END gp_tipotransaccion_tipoactividad;
+
+    ASSOCIATION gp_transaccion_actividad =
+      transaccion -- {1} GP_Transaccion;
+      actividad -- {1..*} GP_Actividad;
+    END gp_transaccion_actividad;
+
+    ASSOCIATION gp_transaccion_tipotransaccion =
+      transaccion -- {0..*} GP_Transaccion;
+      tipo_transaccion -- {1} GP_TipoTransaccion;
+    END gp_transaccion_tipotransaccion;
+
+  END Gestion_Procesos;
+
+  UNIT
+
+    Area (ABSTRACT) = (INTERLIS.LENGTH * INTERLIS.LENGTH);
+
+    MetroCuadrado [m2] EXTENDS Area = (INTERLIS.m * INTERLIS.m);
+
+    Centrimetro [cm] = 1 / 100 [INTERLIS.m];
+
+END Gestion_Procesos_V0_1.
